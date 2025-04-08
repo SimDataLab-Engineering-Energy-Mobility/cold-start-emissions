@@ -158,29 +158,24 @@ def train_model(
         epoch_val_loss /= len(test_loader)
         train_losses.append(epoch_train_loss)
         val_losses.append(epoch_val_loss)
+        print(f"Epoch [{epoch+1}/{params['num_epochs']}], Train Loss: {epoch_train_loss:.4f}, Val Loss: {epoch_val_loss:.4f}")
         
-        # Save model checkpoints
-        if (epoch + 1) % 10 == 0:
-            save_path = os.path.join(save_dir, f'epoch_{epoch+1}.pth')
-            torch.save(model.state_dict(), save_path)
-            
-        if epoch_val_loss < best_val_loss:
-            best_val_loss = epoch_val_loss
-            torch.save(model.state_dict(), os.path.join(save_dir, 'best_model.pth'))
-            
-        # Print progress
-        print(f"Epoch [{epoch+1}/{params['num_epochs']}] "
-              f"Train Loss: {epoch_train_loss:.4f}, "
-              f"Val Loss: {epoch_val_loss:.4f}")
-        
-        # Visualize sample predictions periodically
-        if epoch == 0 or (epoch + 1) % 50 == 0:
-            visualize_predictions(
-                torch.cat(all_preds),
-                torch.cat(all_actuals),
-                epoch=epoch+1,
-                save_path=os.path.join(fig_path, f'predictions_epoch_{epoch+1}.png')
-            )
+        # Save model
+        save_path = os.path.join(save_dir, f'epoch_{epoch+1}.pth')
+        torch.save(model.state_dict(), save_path)
+    
+    # After training, find the epoch with the minimum validation loss
+    best_epoch = val_losses.index(min(val_losses)) + 1  # +1 because we start from epoch 1
+    print(f'Best model at epoch {best_epoch} with training loss {min(val_losses):.4f}')
+
+    # Delete other model checkpoints
+    for epoch in range(1, params['num_epochs'] + 1):
+        if epoch != best_epoch:
+            file_path = os.path.join(save_dir, f'epoch_{epoch}.pth')
+            if os.path.exists(file_path):
+                os.remove(file_path)
+
+    print(f"Kept only model from epoch {best_epoch}. Others deleted.")    
             
     # Finalization
     training_time = time.time() - start_time
@@ -257,7 +252,7 @@ if __name__ == "__main__":
         'num_layers': 2,
         'dropout': 0.2,
         'learning_rate': 0.0001,
-        'num_epochs': 300,
+        'num_epochs': 50,
         'output_length': 5
     } 
     # Train the model   
