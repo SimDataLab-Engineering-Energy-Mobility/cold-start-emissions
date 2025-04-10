@@ -35,10 +35,11 @@ with "jupyter/ai" as JupyterLab-Basemodule.
 # Requirements
 
 ## Basics
-- python >= ???3.9
-- pytorch >= ????2.0.0
-- scipy???
-- mathplotlib ??? 
+- python >= 3.9
+- pytorch = 2.6
+- scipy = 1.15.2
+- mathplotlib = 3.10.1
+- numpy = 2.2.4
 
 
 ## GPU support

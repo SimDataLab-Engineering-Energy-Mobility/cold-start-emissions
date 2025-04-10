@@ -82,6 +82,7 @@ def train_model(
     print(f"Using device: {device}")
     
     # Initialize model
+    logging.info("Initializing model...")
     encoder = Encoder(
         params['input_dim'],
         params['hidden_dim'],
@@ -102,9 +103,10 @@ def train_model(
         device,
         params['output_length']
     ).to(device)
-    
+    logging.info("Model initialized.")
+    logging.info("initialized model with parameters:")
     # Loss and optimizer
-    criterion = nn.HuberLoss()
+    criterion = nn.HuberLoss(delta=0.25)
     optimizer = optim.Adam(model.parameters(), lr=params['learning_rate'])
     
     # Training tracking
@@ -119,9 +121,12 @@ def train_model(
     
     # Create save directory
     os.makedirs(save_dir, exist_ok=True)
+    logging.info(f"Model checkpoints will be saved to: {save_dir}")
+    logging.info(f"Training figures will be saved to: {fig_path}")
     
     # Training loop
     start_time = time.time()
+    logging.info("Starting training...")
     for epoch in range(params['num_epochs']):
         # Training phase
         model.train()
@@ -159,7 +164,7 @@ def train_model(
         train_losses.append(epoch_train_loss)
         val_losses.append(epoch_val_loss)
         print(f"Epoch [{epoch+1}/{params['num_epochs']}], Train Loss: {epoch_train_loss:.4f}, Val Loss: {epoch_val_loss:.4f}")
-        
+        logging.info(f"Epoch [{epoch+1}/{params['num_epochs']}], Train Loss: {epoch_train_loss:.4f}, Val Loss: {epoch_val_loss:.4f}")
         # Save model
         save_path = os.path.join(save_dir, f'epoch_{epoch+1}.pth')
         torch.save(model.state_dict(), save_path)
@@ -167,7 +172,9 @@ def train_model(
     # After training, find the epoch with the minimum validation loss
     best_epoch = val_losses.index(min(val_losses)) + 1  # +1 because we start from epoch 1
     print(f'Best model at epoch {best_epoch} with training loss {min(val_losses):.4f}')
-
+    logging.info(f'Best model at epoch {best_epoch} with training loss {min(val_losses):.4f}')
+    
+    # Save the best model
     # Delete other model checkpoints
     for epoch in range(1, params['num_epochs'] + 1):
         if epoch != best_epoch:
@@ -176,13 +183,15 @@ def train_model(
                 os.remove(file_path)
 
     print(f"Kept only model from epoch {best_epoch}. Others deleted.")    
-            
+    logging.info(f"Kept only model from epoch {best_epoch}. Others deleted.")        
+    
     # Finalization
     training_time = time.time() - start_time
     print(f"\nTraining completed in {training_time//60:.0f}m {training_time%60:.2f}s")
     print(f"Best validation loss: {best_val_loss:.4f}")
     
     # Plot loss curves
+    logging.info("Plotting loss curves...")
     plot_loss_curves(
         train_losses, 
         val_losses,
