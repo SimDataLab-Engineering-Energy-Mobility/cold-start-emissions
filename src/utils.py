@@ -1,3 +1,11 @@
+# Copyright (C) 2025 Karlsruhe Institute of Technology (KIT)
+
+# Scientific Computing Center (SCC), Department of Scientific Computing and Mathematics
+
+# Authors: Manoj Mangipudi, Jordan A. Denev
+
+# Licensed under the GNU General Public License v3.0
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
