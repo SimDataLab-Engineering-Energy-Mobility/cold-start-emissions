@@ -21,10 +21,10 @@ from exception import CustomException
 @dataclass
 class DataPaths:
     """stores paths to data files"""
-    X_train: str = os.path.join("artifacts", "X_train.npy")
-    X_test: str = os.path.join("artifacts", "X_test.npy")
-    y_train: str = os.path.join("artifacts", "y_train.npy")
-    y_test: str = os.path.join("artifacts", "y_test.npy")
+    X_train: str = os.path.join("sample_training_data", "X_train.npy")
+    X_test: str = os.path.join("sample_training_data", "X_test.npy")
+    y_train: str = os.path.join("sample_training_data", "y_train.npy")
+    y_test: str = os.path.join("sample_training_data", "y_test.npy")
 
 class DataPreprocessor:
     """Handles data loading, data normalization, and sequence processing"""

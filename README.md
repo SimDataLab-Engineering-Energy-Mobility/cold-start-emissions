@@ -5,7 +5,7 @@
     - [Requirements](#requirements)
     - [Example Data](#example-data)
     - [Resources](#resources)
-  - [Example Data](#Example Data)
+  - [Example Data](#Example-Data)
   - [License](#license)
   - [Citing](#citing)
   - [Acknowledgements](#acknowledgements)

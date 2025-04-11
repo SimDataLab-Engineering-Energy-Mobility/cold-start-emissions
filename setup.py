@@ -16,7 +16,7 @@ def get_requirements(file_path: str) -> List[str]:
     
 setup(
 name='COLD-START-EMISSIONS',
-version='0.0.1',
+version='1.0',
 author='Manoj_and_Jordan',
 author_email='jordan.denev@kit.edu',
 packages=find_packages(),
