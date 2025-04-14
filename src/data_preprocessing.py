@@ -13,18 +13,32 @@ from sklearn.preprocessing import StandardScaler
 from typing import Tuple
 import os
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from logger import logging
 from exception import CustomException
 
 
 @dataclass
 class DataPaths:
-    """stores paths to data files"""
+    base_dir: str = "sample_training_data"
+    X_train: str = field(init=False)
+    X_test: str = field(init=False)
+    y_train: str = field(init=False)
+    y_test: str = field(init=False)
+
+    def __post_init__(self):
+        self.X_train = os.path.join(self.base_dir, "X_train.npy")
+        self.X_test = os.path.join(self.base_dir, "X_test.npy")
+        self.y_train = os.path.join(self.base_dir, "y_train.npy")
+        self.y_test = os.path.join(self.base_dir, "y_test.npy")
+"""
+class DataPaths:
+    #stores paths to data files
     X_train: str = os.path.join("sample_training_data", "X_train.npy")
     X_test: str = os.path.join("sample_training_data", "X_test.npy")
     y_train: str = os.path.join("sample_training_data", "y_train.npy")
     y_test: str = os.path.join("sample_training_data", "y_test.npy")
+"""
 
 class DataPreprocessor:
     """Handles data loading, data normalization, and sequence processing"""
@@ -150,59 +164,4 @@ class DataLoaderFact:
             DataLoader(test_dataset, batch_size=len(test_dataset), shuffle=False)
         )
 
-
-# usage
-
-if __name__ == "__main__":
-    # initialize the data preprocessor
-    data_preprocessor = DataPreprocessor()
-    # load the raw data
-    X_train, X_test, y_train, y_test = data_preprocessor.data_processing()  
-    
-    # Create data loaders
-    train_loader, test_loader = DataLoaderFact.create_loaders(X_train, X_test, y_train, y_test)
-    #print(f"Total training batches: {len(train_loader)}")
-    #print(f"Total test batches: {len(test_loader)}")
-    # Should have multiple batches unless batch_size >= dataset size
-    print(f"Dataset size: {len(train_loader.dataset)}")
-    print(f"Batch size: {train_loader.batch_size}")
-    print(f"Calculated batches: {len(train_loader.dataset)/train_loader.batch_size:.1f}")
-    
-    # Print shapes for verification
-    #sample_input, sample_target = next(iter(train_loader))
-    #print(f"Train loader - Input shape: {sample_input.shape}, Target shape: {sample_target.shape}")
-    
-    #test_input, test_target = next(iter(test_loader))
-    #print(f"Test loader - Input shape: {test_input.shape}, Target shape: {test_target.shape}")     
- 
-
-"""
-    Complete training pipeline with visualization and model saving
-    
-    Args:
-        train_loader: Training data loader
-        test_loader: Validation data loader
-        model_params: Dictionary of model hyperparameters
-        save_dir: Directory to save trained models
-        
-    Returns:
-        tuple: (trained_model, train_loss_history, val_loss_history)
-"""
-
-
-"""def train_model():
-    # Initialize components
-    preprocessor = DataPreprocessor()
-    
-    # Prepare data
-    x_train, x_test, y_train, y_test = preprocessor.data_processing()
-    
-    # Create data loaders
-    train_loader, test_loader = DataLoaderFact.create_loaders(x_train, x_test, y_train, y_test)
-    
-    # Inspect batches before training
-    inspect_batches(train_loader, num_batches=2)
-    
-    # initialize the model
-"""  
-    
+   
